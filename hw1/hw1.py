@@ -10,6 +10,9 @@ class LinearRegression:
         self.gradient_descent_weights = None
         self.gradient_descent_intercept = None
         self.train_loss = []
+        self.best_weights = None
+        self.best_intercept = None
+        self.best_index = 0
         
     # This function computes the closed-form solution of linear regression.
     def closed_form_fit(self, X, y):
@@ -37,7 +40,10 @@ class LinearRegression:
         self.gradient_descent_weights = np.zeros(var_num)
         self.gradient_descent_intercept = 0
         self.train_loss = []
-        
+        min_error = 9999999999999999999999999
+        best_weights = None
+        best_intercept = None
+        best_index = 0
         for epoch in range(epochs):
             #every epoch we shuffle the data to avoid the order of data
             indices = np.arange(sample_num)
@@ -62,8 +68,16 @@ class LinearRegression:
                 self.gradient_descent_intercept -= lr * gradient_intercept
             
             loss = self.gradient_descent_evaluate(X, y)
+            if(loss<min_error):
+                min_error = loss
+                best_weights = self.gradient_descent_weights
+                best_intercept = self.gradient_descent_intercept
+                best_index = epoch
             self.train_loss.append(loss)
             # input()
+        self.best_weights = best_weights
+        self.best_intercept = best_intercept
+        self.best_index = best_index
         return 
         pass
         
@@ -105,13 +119,21 @@ class LinearRegression:
         # This function is finished for you.
         return self.get_mse_loss(self.gradient_descent_predict(X), y)
         
+        
+    def best_gradient_descent_predict(self, X):
+        result = np.dot(X, self.best_weights)
+        result = result + self.best_intercept
+        return result 
+    def best_gradient_descent_evaluate(self, X, y):
+        return self.get_mse_loss(self.best_gradient_descent_predict(X), y)
+    
     # This function use matplotlib to plot and show the learning curve (x-axis: epoch, y-axis: training loss) of your gradient descent solution.
     # You don't need to call this function in your submission, but you have to provide the screenshot of the plot in the report.
     def plot_learning_curve(self):
-        plt.plot(range(1, len(self.train_loss) + 1), self.train_loss, marker='o', linestyle='-')
-        plt.title('Learning Curve')
+        plt.plot(range(1, len(self.train_loss) + 1), self.train_loss, marker='.', linestyle='-')
+        plt.title('Training Loss')
         plt.xlabel('Epoch')
-        plt.ylabel('Training Loss')
+        plt.ylabel('MSE Loss')
         plt.grid(True)
         plt.show()
         return 
@@ -136,7 +158,7 @@ if __name__ == "__main__":
     print("Closed-form Solution")
     print(f"Weights: {LR.closed_form_weights}, Intercept: {LR.closed_form_intercept}")
 
-    LR.gradient_descent_fit(train_x, train_y, lr=0.000180, epochs=1500)
+    LR.gradient_descent_fit(train_x, train_y, lr=0.00018, epochs=2500,batch_size=24)
     print("Gradient Descent Solution")
     print(f"Weights: {LR.gradient_descent_weights}, Intercept: {LR.gradient_descent_intercept}")
 
@@ -146,12 +168,12 @@ if __name__ == "__main__":
     test_x = test_x.to_numpy()
     test_y = test_y.to_numpy()
 
-    # closed_form_loss = LR.closed_form_evaluate(train_x, train_y)
-    # gradient_descent_loss = LR.gradient_descent_evaluate(train_x, train_y)
-    # print(f"Error Rate: {((gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
-
     closed_form_loss = LR.closed_form_evaluate(test_x, test_y)
     gradient_descent_loss = LR.gradient_descent_evaluate(test_x, test_y)
     # print(closed_form_loss, gradient_descent_loss)
-    print(f"Error Rate: {((gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
-    LR.plot_learning_curve()
+    print(f"Error Rate: {(abs(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
+    
+    # print("\n\n\nif use best weights and intercept")
+    # print(f"Weights: {LR.best_weights}, Intercept: {LR.best_intercept}, AT: {LR.best_index}'th training" )
+    # print(f"Error Rate: {(abs(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
+    # LR.plot_learning_curve()
