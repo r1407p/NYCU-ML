@@ -47,6 +47,7 @@ class LinearRegression:
         for epoch in range(epochs):
             #every epoch we shuffle the data to avoid the order of data
             indices = np.arange(sample_num)
+            
             np.random.shuffle(indices)
             # print(indices)
             X = X[indices]
@@ -171,9 +172,9 @@ if __name__ == "__main__":
     closed_form_loss = LR.closed_form_evaluate(test_x, test_y)
     gradient_descent_loss = LR.gradient_descent_evaluate(test_x, test_y)
     # print(closed_form_loss, gradient_descent_loss)
-    print(f"Error Rate: {(abs(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
+    print(f"Error Rate: {(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100:.1f}%")
     
-    # print("\n\n\nif use best weights and intercept")
-    # print(f"Weights: {LR.best_weights}, Intercept: {LR.best_intercept}, AT: {LR.best_index}'th training" )
-    # print(f"Error Rate: {(abs(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
-    # LR.plot_learning_curve()
+    print("\n\n\nif use best weights and intercept")
+    print(f"Weights: {LR.best_weights}, Intercept: {LR.best_intercept}, AT: {LR.best_index}'th training" )
+    print(f"Error Rate: {(abs(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
+    LR.plot_learning_curve()
