@@ -47,13 +47,12 @@ class LinearRegression:
         for epoch in range(epochs):
             #every epoch we shuffle the data to avoid the order of data
             indices = np.arange(sample_num)
+            "use shuffle or not"
+            # np.random.shuffle(indices)
             
-            np.random.shuffle(indices)
-            # print(indices)
             X = X[indices]
             y = y[indices]
-            # print(X)
-            # print(y)
+            
             for batch in range(sample_num//batch_size):
                 # here is the start and end index of the batch
                 start = batch * batch_size
@@ -159,7 +158,7 @@ if __name__ == "__main__":
     print("Closed-form Solution")
     print(f"Weights: {LR.closed_form_weights}, Intercept: {LR.closed_form_intercept}")
 
-    LR.gradient_descent_fit(train_x, train_y, lr=0.00018, epochs=2500,batch_size=24)
+    LR.gradient_descent_fit(train_x, train_y, lr=0.00006, epochs=4500,batch_size=24)
     print("Gradient Descent Solution")
     print(f"Weights: {LR.gradient_descent_weights}, Intercept: {LR.gradient_descent_intercept}")
 
@@ -174,7 +173,7 @@ if __name__ == "__main__":
     # print(closed_form_loss, gradient_descent_loss)
     print(f"Error Rate: {(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100:.1f}%")
     
-    print("\n\n\nif use best weights and intercept")
-    print(f"Weights: {LR.best_weights}, Intercept: {LR.best_intercept}, AT: {LR.best_index}'th training" )
-    print(f"Error Rate: {(abs(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
+    # print("\n\n\nif use best weights and intercept")
+    # print(f"Weights: {LR.best_weights}, Intercept: {LR.best_intercept}, AT: {LR.best_index}'th training" )
+    # print(f"Error Rate: {(abs(gradient_descent_loss - closed_form_loss) / closed_form_loss * 100):.1f}%")
     LR.plot_learning_curve()
